@@ -528,7 +528,7 @@
     const radius = center - 18;
 
     let currentRotation = 0;
-    let alreadySpun = localStorage.getItem("luck_ruleta_usada2") === "si";
+    let alreadySpun = localStorage.getItem("luck_ruleta_usada3") === "si";
 
     const colors = [
       "#8b0000",
@@ -656,7 +656,7 @@
       }
 
       alreadySpun = true;
-      localStorage.setItem("luck_ruleta_usada", "si");
+      localStorage.setItem("luck_ruleta_usada3", "si");
 
       spinBtn.disabled = true;
       spinBtn.textContent = "Girando...";
@@ -711,10 +711,6 @@
     }
 
     function abrirWebchat() {
-      /*
-        Desde este momento Callbell se vuelve visible.
-        Antes de tocar este botón, queda completamente oculto.
-      */
       document.body.classList.add("show-callbell");
 
       if (webchatGuide) webchatGuide.style.display = "block";
