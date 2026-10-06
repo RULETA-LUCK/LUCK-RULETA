@@ -403,6 +403,12 @@
       <div class="prize-name" id="prizeName">---</div>
 
       <p class="claim-text">
+        Para activar este premio tenés que hacer una carga mínima de:
+        <br>
+        <strong id="minimumLoad">---</strong>
+      </p>
+
+      <p class="claim-text">
         Para activarlo, abrí el webchat y escribí:
         <br>
         <strong id="claimMessage">QUIERO MI PREMIO</strong>
@@ -445,8 +451,8 @@
       window.callbellSettings = {};
     }
 
-    window.callbellSettings["uuid"] = "eb286679-63bc-4822-9282-2c9d808988a7";
-    window.callbellSettings["script_token"] = "smc5ccTFjLbN5f1V5ju6Rkzf";
+    window.callbellSettings["uuid"] = "095e8229-2c34-49e5-a6d9-627d2ccca1e0";
+    window.callbellSettings["script_token"] = "JJKcLbQFCd4mrJUzhga6tgVP";
   </script>
 
   <script>
@@ -470,11 +476,12 @@
 
   <script>
     const premios = [
-      { nombre: "10% EXTRA", porcentaje: 45 },
-      { nombre: "20% EXTRA", porcentaje: 35 },
-      { nombre: "2.500 FICHAS", porcentaje: 10 },
-      { nombre: "5.000 FICHAS", porcentaje: 5 },
-      { nombre: "3.000 FICHAS", porcentaje: 5 }
+      { nombre: "3.500 FICHAS", cargaMinima: "10.500", porcentaje: 32 },
+      { nombre: "2.500 EXTRA", cargaMinima: "5.000", porcentaje: 32 },
+      { nombre: "5.000 EXTRA", cargaMinima: "15.000", porcentaje: 1 },
+      { nombre: "1.000 FICHAS", cargaMinima: "3.000", porcentaje: 32 },
+      { nombre: "2.000 FICHAS", cargaMinima: "4.000", porcentaje: 2 },
+      { nombre: "3.000 FICHAS", cargaMinima: "10.000", porcentaje: 1 }     
     ];
 
     const canvas = document.getElementById("wheel");
@@ -528,7 +535,7 @@
     const radius = center - 18;
 
     let currentRotation = 0;
-    let alreadySpun = localStorage.getItem("luck_ruleta_usada3") === "si";
+    let alreadySpun = localStorage.getItem("luck_ruleta_usada2") === "si" || localStorage.getItem("luck_ruleta_usada3") === "si";
 
     const colors = [
       "#8b0000",
@@ -672,6 +679,7 @@
       arrowToChat.style.display = "none";
 
       const selectedPrize = elegirPremioPorPorcentaje();
+      localStorage.setItem("luck_ruleta_premio2", selectedPrize.nombre);
       const selectedIndex = premios.findIndex(p => p.nombre === selectedPrize.nombre);
 
       const total = premios.length;
@@ -692,9 +700,10 @@
       }, 5200);
     }
 
-    function mostrarResultado(premio) {
+    function mostrarResultado(premio, animar = true) {
       prizeName.textContent = premio.nombre;
-      claimMessage.textContent = `QUIERO RECLAMAR ${premio.nombre}`;
+      document.getElementById("minimumLoad").textContent = `$${premio.cargaMinima}`;
+      claimMessage.textContent = `QUIERO RECLAMAR ${premio.nombre} - CARGA $${premio.cargaMinima}`;
 
       resultCard.style.display = "block";
 
@@ -702,15 +711,21 @@
       centerSpin.textContent = "Usado";
       centerSpin.style.opacity = "0.75";
 
-      lanzarConfetti();
+      if (animar) {
+        lanzarConfetti();
 
-      resultCard.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-      });
+        resultCard.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      }
     }
 
     function abrirWebchat() {
+      /*
+        Desde este momento Callbell se vuelve visible.
+        Antes de tocar este botón, queda completamente oculto.
+      */
       document.body.classList.add("show-callbell");
 
       if (webchatGuide) webchatGuide.style.display = "block";
@@ -780,6 +795,12 @@
 
     if (alreadySpun) {
       bloquearRuletaUsada();
+
+      const savedPrize = premios.find(p => p.nombre === localStorage.getItem("luck_ruleta_premio2"));
+      if (savedPrize) {
+        if (usedCard) usedCard.style.display = "none";
+        mostrarResultado(savedPrize, false);
+      }
     }
   </script>
 </body>
